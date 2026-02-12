@@ -20,11 +20,11 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-xl">L</span>
+          <Link to="/" className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-600 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+              <span className="text-white font-bold text-lg sm:text-xl">L</span>
             </div>
-            <span className="text-xl font-bold text-gray-900">LA LIGA TDV</span>
+            <span className="text-base sm:text-lg lg:text-xl font-bold text-gray-900 truncate">LA LIGA TDV</span>
           </Link>
 
           {/* Navigation Links - Desktop */}
@@ -51,23 +51,25 @@ const Navbar = () => {
 
             {/* Auth button */}
             {isAuthenticated ? (
-              <div className="flex items-center space-x-3">
-                <span className="text-sm text-gray-700 hidden sm:inline">
+              <div className="flex items-center space-x-2 sm:space-x-3">
+                <span className="text-xs sm:text-sm text-gray-700 hidden md:inline truncate max-w-[100px] lg:max-w-none">
                   {user?.name}
                 </span>
                 <button
                   onClick={logout}
-                  className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition"
+                  className="px-3 py-2 sm:px-4 bg-red-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-red-700 transition whitespace-nowrap"
                 >
-                  Cerrar sesión
+                  <span className="hidden sm:inline">Cerrar sesión</span>
+                  <span className="sm:hidden">Salir</span>
                 </button>
               </div>
             ) : (
               <Link
                 to="/login"
-                className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition"
+                className="px-3 py-2 sm:px-4 bg-blue-600 text-white text-xs sm:text-sm font-medium rounded-lg hover:bg-blue-700 transition whitespace-nowrap"
               >
-                Iniciar sesión
+                <span className="hidden sm:inline">Iniciar sesión</span>
+                <span className="sm:hidden">Login</span>
               </Link>
             )}
           </div>
@@ -75,13 +77,13 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Navigation */}
-      <div className="md:hidden border-t border-gray-200 bg-gray-50 overflow-x-auto">
-        <div className="flex space-x-2 px-4 py-2">
+      <div className="md:hidden border-t border-gray-200 bg-gray-50 overflow-x-auto scrollbar-hide">
+        <div className="flex space-x-1 px-3 py-2.5">
           {navLinks.map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className="px-3 py-1 text-xs font-medium text-gray-700 hover:text-blue-600 whitespace-nowrap"
+              className="px-3 py-1.5 text-xs font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md whitespace-nowrap transition"
             >
               {link.name}
             </Link>

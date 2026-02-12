@@ -28,23 +28,23 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
       <div className="max-w-md w-full">
         {/* Logo y título */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-2xl mb-4">
-            <span className="text-white text-3xl font-bold">L</span>
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-blue-600 rounded-2xl mb-3 sm:mb-4">
+            <span className="text-white text-2xl sm:text-3xl font-bold">L</span>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">La Liga</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">La Liga</h1>
         </div>
 
         {/* Card de login */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-5 sm:mb-6 text-center">
             Bienvenido de nuevo
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
