@@ -2,6 +2,13 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Login from './pages/Login'
 import Home from './pages/Home'
+import AdminPanel from './pages/AdminPanel'
+import CarouselAdmin from './pages/CarouselAdmin'
+import TableImagesAdmin from './pages/TableImagesAdmin'
+import SponsorsAdmin from './pages/SponsorsAdmin'
+import AdminTournaments from './pages/AdminTournaments'
+import AdminTeams from './pages/AdminTeams'
+import AdminMatches from './pages/AdminMatches'
 
 // Componente para rutas protegidas (opcional para futuro)
 const ProtectedRoute = ({ children }) => {
@@ -31,6 +38,17 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
+          
+          {/* Rutas de administración */}
+          <Route path="/admin" element={<AdminPanel />} />
+          <Route path="/admin/carousel" element={<CarouselAdmin />} />
+          <Route path="/admin/table-images" element={<TableImagesAdmin />} />
+          <Route path="/admin/sponsors" element={<SponsorsAdmin />} />
+          <Route path="/admin/tournaments" element={<AdminTournaments />} />
+          <Route path="/admin/teams" element={<AdminTeams />} />
+          <Route path="/admin/matches" element={<AdminMatches />} />
+          
+          {/* Rutas placeholder */}
           <Route path="/torneos" element={<PlaceholderPage title="Torneos" />} />
           <Route path="/partidos" element={<PlaceholderPage title="Partidos" />} />
           <Route path="/clubes" element={<PlaceholderPage title="Clubes" />} />

@@ -5,6 +5,10 @@ import authRoutes from './routes/auth.routes.js';
 import matchRoutes from './routes/match.routes.js';
 import teamRoutes from './routes/team.routes.js';
 import tournamentRoutes from './routes/tournament.routes.js';
+import carouselRoutes from './routes/carousel.routes.js';
+import tableImageRoutes from './routes/tableImage.routes.js';
+import sponsorRoutes from './routes/sponsor.routes.js';
+import standingsRoutes from './routes/standings.routes.js';
 
 // Configuración de variables de entorno
 dotenv.config();
@@ -27,6 +31,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/matches', matchRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/tournaments', tournamentRoutes);
+app.use('/api/carousel', carouselRoutes);
+app.use('/api/table-images', tableImageRoutes);
+app.use('/api/sponsors', sponsorRoutes);
+app.use('/api/standings', standingsRoutes);
 
 // Ruta de prueba
 app.get('/', (req, res) => {

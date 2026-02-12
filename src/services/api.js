@@ -135,5 +135,51 @@ export default {
   auth: authService,
   matches: matchService,
   teams: teamService,
-  tournaments: tournamentService
+  tournaments: tournamentService,
+  // Métodos genéricos para uso directo
+  get: async (endpoint) => {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      headers: getAuthHeaders()
+    })
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Error en la petición')
+    }
+    return response.json()
+  },
+  post: async (endpoint, data) => {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'POST',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Error en la petición')
+    }
+    return response.json()
+  },
+  put: async (endpoint, data) => {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data)
+    })
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Error en la petición')
+    }
+    return response.json()
+  },
+  delete: async (endpoint) => {
+    const response = await fetch(`${API_URL}${endpoint}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders()
+    })
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(error.error || 'Error en la petición')
+    }
+    return response.json()
+  }
 }

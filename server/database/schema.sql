@@ -99,6 +99,54 @@ INSERT INTO matches (team1_id, team2_id, score1, score2, match_date, category, t
 (9, 11, 0, 0, '2026-02-15 20:00:00', 'Superiores', 1, 'scheduled'),
 (13, 15, 0, 0, '2026-02-15 21:00:00', 'Superiores', 1, 'scheduled');
 
+-- Tabla de imágenes del carrusel
+CREATE TABLE IF NOT EXISTS carousel_images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  image_url VARCHAR(500) NOT NULL,
+  link VARCHAR(500),
+  order_index INT DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tabla de imágenes junto a la tabla de posiciones
+CREATE TABLE IF NOT EXISTS table_images (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  image_url VARCHAR(500) NOT NULL,
+  link VARCHAR(500),
+  position ENUM('left', 'right') DEFAULT 'right',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Tabla de sponsors/patrocinadores
+CREATE TABLE IF NOT EXISTS sponsors (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  logo_url VARCHAR(500) NOT NULL,
+  website VARCHAR(500),
+  order_index INT DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insertar datos de ejemplo para carousel
+INSERT INTO carousel_images (title, image_url, order_index) VALUES
+('Torneo de Verano 2026', 'https://via.placeholder.com/1200x400/8B5CF6/FFFFFF?text=Torneo+de+Verano', 1),
+('Open Cañuelas', 'https://via.placeholder.com/1200x400/EC4899/FFFFFF?text=Open+Cañuelas', 2);
+
+-- Insertar datos de ejemplo para sponsors  
+INSERT INTO sponsors (name, logo_url, order_index) VALUES
+('FRILAVP', 'https://via.placeholder.com/200x100/3B82F6/FFFFFF?text=FRILAVP', 1),
+('NOTORIETY', 'https://via.placeholder.com/200x100/8B5CF6/FFFFFF?text=NOTORIETY', 2),
+('AUTHAEDO', 'https://via.placeholder.com/200x100/EC4899/FFFFFF?text=AUTHAEDO', 3),
+('TIENDA DE CALDOS', 'https://via.placeholder.com/200x100/10B981/FFFFFF?text=TIENDA+DE+CALDOS', 4);
+
 -- Índices para mejorar el rendimiento
 CREATE INDEX idx_matches_date ON matches(match_date);
 CREATE INDEX idx_matches_category ON matches(category);
