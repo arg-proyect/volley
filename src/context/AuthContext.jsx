@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from 'react'
 
 const AuthContext = createContext()
+const API_URL = 'http://localhost:5000/api'
 
 export const useAuth = () => {
   const context = useContext(AuthContext)
@@ -13,39 +14,82 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [token, setToken] = useState(null)
 
   useEffect(() => {
     // Verificar si hay sesión guardada
     const savedUser = localStorage.getItem('user')
-    if (savedUser) {
+    const savedToken = localStorage.getItem('token')
+    
+    if (savedUser && savedToken) {
       setUser(JSON.parse(savedUser))
+      setToken(savedToken)
     }
     setLoading(false)
   }, [])
 
-  const login = (email, password) => {
-    // Mock login - en producción esto sería una llamada a API
-    if (email && password) {
-      const userData = {
-        email,
-        name: 'Usuario Admin',
-        role: 'admin'
+  const login = async (email, password) => {
+    try {
+      const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setUser(data.user)
+        setToken(data.token)
+        localStorage.setItem('user', JSON.stringify(data.user))
+        localStorage.setItem('token', data.token)
+        return { success: true }
+      } else {
+        return { success: false, error: data.error || 'Error al iniciar sesión' }
       }
-      setUser(userData)
-      localStorage.setItem('user', JSON.stringify(userData))
-      return true
+    } catch (error) {
+      console.error('Error en login:', error)
+      return { success: false, error: 'Error de conexión con el servidor' }
     }
-    return false
+  }
+
+  const register = async (name, email, password) => {
+    try {
+      const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        return { success: true, message: data.message }
+      } else {
+        return { success: false, error: data.error || 'Error al registrar usuario' }
+      }
+    } catch (error) {
+      console.error('Error en register:', error)
+      return { success: false, error: 'Error de conexión con el servidor' }
+    }
   }
 
   const logout = () => {
     setUser(null)
+    setToken(null)
     localStorage.removeItem('user')
+    localStorage.removeItem('token')
   }
 
   const value = {
     user,
+    token,
     login,
+    register,
     logout,
     loading,
     isAuthenticated: !!user

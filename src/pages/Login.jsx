@@ -10,7 +10,7 @@ const Login = () => {
   const navigate = useNavigate()
   const { login } = useAuth()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
 
@@ -19,11 +19,11 @@ const Login = () => {
       return
     }
 
-    const success = login(email, password)
-    if (success) {
+    const result = await login(email, password)
+    if (result.success) {
       navigate('/')
     } else {
-      setError('Credenciales inválidas')
+      setError(result.error || 'Credenciales inválidas')
     }
   }
 
