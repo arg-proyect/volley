@@ -5,11 +5,9 @@ const Footer = () => {
     { name: 'Inicio', path: '/' },
     { name: 'Torneos', path: '/torneos' },
     { name: 'Partidos', path: '/partidos' },
-    { name: 'Clubes', path: '/clubes' },
-    { name: 'Jugadores', path: '/jugadores' },
     { name: 'Estadísticas', path: '/estadisticas' },
     { name: 'Noticias', path: '/noticias' },
-    { name: 'Documentos', path: '/documentos' },
+  
   ]
 
   return (

@@ -15,6 +15,7 @@ const CarouselAdmin = () => {
   const [editingId, setEditingId] = useState(null)
   const [formData, setFormData] = useState({
     title: '',
+    subtitle: '',
     image_url: '',
     link: '',
     order_index: 0,
@@ -75,6 +76,7 @@ const CarouselAdmin = () => {
   const handleEdit = (image) => {
     setFormData({
       title: image.title,
+      subtitle: image.subtitle || '',
       image_url: image.image_url,
       link: image.link || '',
       order_index: image.order_index,
@@ -109,6 +111,7 @@ const CarouselAdmin = () => {
   const resetForm = () => {
     setFormData({
       title: '',
+      subtitle: '',
       image_url: '',
       link: '',
       order_index: 0,
@@ -159,13 +162,22 @@ const CarouselAdmin = () => {
             </h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Título</label>
+                <label className="block text-sm font-medium mb-1">Título (ej: LA LIGA)</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
                   className="w-full border rounded-lg px-3 py-2"
                   required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Subtítulo (ej: El Voley del Oeste)</label>
+                <input
+                  type="text"
+                  value={formData.subtitle}
+                  onChange={(e) => setFormData({...formData, subtitle: e.target.value})}
+                  className="w-full border rounded-lg px-3 py-2"
                 />
               </div>
               <div>

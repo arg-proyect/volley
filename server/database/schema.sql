@@ -86,6 +86,7 @@ INSERT INTO tournaments (name, description, start_date, end_date, image) VALUES
 
 -- Insertar partidos de ejemplo
 INSERT INTO matches (team1_id, team2_id, score1, score2, match_date, category, tournament_id, status) VALUES
+-- Torneo de Verano (tournament_id = 1)
 (1, 2, 1, 3, '2026-02-08 18:00:00', 'Superiores', 1, 'finished'),
 (3, 4, 3, 2, '2026-02-08 19:00:00', 'Superiores', 1, 'finished'),
 (5, 6, 3, 1, '2026-02-08 20:00:00', 'Superiores', 1, 'finished'),
@@ -97,12 +98,22 @@ INSERT INTO matches (team1_id, team2_id, score1, score2, match_date, category, t
 (1, 3, 0, 0, '2026-02-15 18:00:00', 'Superiores', 1, 'scheduled'),
 (5, 7, 0, 0, '2026-02-15 19:00:00', 'Superiores', 1, 'scheduled'),
 (9, 11, 0, 0, '2026-02-15 20:00:00', 'Superiores', 1, 'scheduled'),
-(13, 15, 0, 0, '2026-02-15 21:00:00', 'Superiores', 1, 'scheduled');
+(13, 15, 0, 0, '2026-02-15 21:00:00', 'Superiores', 1, 'scheduled'),
+-- Open Cañuelas (tournament_id = 2)
+(17, 18, 3, 1, '2026-02-05 16:00:00', 'Mayores', 2, 'finished'),
+(19, 1, 2, 3, '2026-02-05 17:00:00', 'Mayores', 2, 'finished'),
+(2, 3, 3, 0, '2026-02-05 18:00:00', 'Mayores', 2, 'finished'),
+(4, 5, 1, 3, '2026-02-05 19:00:00', 'Mayores', 2, 'finished'),
+(6, 7, 3, 2, '2026-02-06 16:00:00', 'Mayores', 2, 'finished'),
+(8, 9, 0, 3, '2026-02-06 17:00:00', 'Mayores', 2, 'finished'),
+(17, 2, 0, 0, '2026-02-12 16:00:00', 'Mayores', 2, 'scheduled'),
+(3, 5, 0, 0, '2026-02-12 17:00:00', 'Mayores', 2, 'scheduled');
 
 -- Tabla de imágenes del carrusel
 CREATE TABLE IF NOT EXISTS carousel_images (
   id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
+  subtitle VARCHAR(255),
   image_url VARCHAR(500) NOT NULL,
   link VARCHAR(500),
   order_index INT DEFAULT 0,
@@ -136,9 +147,9 @@ CREATE TABLE IF NOT EXISTS sponsors (
 );
 
 -- Insertar datos de ejemplo para carousel
-INSERT INTO carousel_images (title, image_url, order_index) VALUES
-('Torneo de Verano 2026', 'https://via.placeholder.com/1200x400/8B5CF6/FFFFFF?text=Torneo+de+Verano', 1),
-('Open Cañuelas', 'https://via.placeholder.com/1200x400/EC4899/FFFFFF?text=Open+Cañuelas', 2);
+INSERT INTO carousel_images (title, subtitle, image_url, order_index) VALUES
+('LA LIGA', 'El Voley del Oeste', 'https://via.placeholder.com/1200x400/8B5CF6/FFFFFF?text=Torneo+de+Verano', 1),
+('LA LIGA', 'El Voley del Oeste', 'https://via.placeholder.com/1200x400/EC4899/FFFFFF?text=Open+Cañuelas', 2);
 
 -- Insertar datos de ejemplo para sponsors  
 INSERT INTO sponsors (name, logo_url, order_index) VALUES

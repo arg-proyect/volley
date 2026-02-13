@@ -66,10 +66,10 @@ const Home = () => {
         setScheduledMatches(scheduled)
         setStandings(standingsData)
         
-        // Seleccionar la primera categoría disponible
-        const categories = Object.keys(standingsData)
-        if (categories.length > 0) {
-          setSelectedCategory(categories[0])
+        // Seleccionar el primer torneo disponible
+        const tournamentNames = Object.keys(standingsData)
+        if (tournamentNames.length > 0) {
+          setSelectedCategory(tournamentNames[0])
         }
       } catch (error) {
         console.error('Error al cargar datos:', error)
@@ -134,7 +134,32 @@ const Home = () => {
                 <div className="absolute inset-0 bg-black/30"></div>
               </div>
             ))}
-            {/* Carousel controls */}
+            
+            {/* Flechas de navegación */}
+            {carouselImages.length > 1 && (
+              <>
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length)}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition"
+                  aria-label="Anterior"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev + 1) % carouselImages.length)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white p-3 rounded-full transition"
+                  aria-label="Siguiente"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </>
+            )}
+            
+            {/* Carousel controls - dots */}
             {carouselImages.length > 1 && (
               <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
                 {carouselImages.map((_, idx) => (
@@ -152,24 +177,16 @@ const Home = () => {
         ) : (
           <div className="absolute inset-0 bg-black opacity-20"></div>
         )}
+        
+        {/* Texto sobre el carousel */}
         <div className="relative max-w-7xl mx-auto px-4 h-full flex items-center justify-center z-10">
           <div className="text-center">
-            {tournaments.length > 0 && (
-              <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-8 mb-6 sm:mb-8">
-                {tournaments.map((tournament) => (
-                  <div key={tournament.id} className="text-center">
-                    <div className="w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 bg-white/10 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-2 sm:mb-3 border-2 border-white/30">
-                      <span className="text-4xl sm:text-5xl lg:text-6xl">{tournament.image || '🏐'}</span>
-                    </div>
-                    <h3 className="text-white font-bold text-xs sm:text-sm uppercase">{tournament.name}</h3>
-                  </div>
-                ))}
-              </div>
-            )}
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 sm:mb-4 drop-shadow-lg">
-              LA LIGA
+              {carouselImages.length > 0 && carouselImages[currentSlide]?.title ? carouselImages[currentSlide].title : 'LA LIGA'}
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow-lg">El Voley del Oeste</p>
+            <p className="text-base sm:text-lg lg:text-xl text-white/90 drop-shadow-lg">
+              {carouselImages.length > 0 && carouselImages[currentSlide]?.subtitle ? carouselImages[currentSlide].subtitle : 'El Voley del Oeste'}
+            </p>
           </div>
         </div>
       </div>
@@ -209,36 +226,83 @@ const Home = () => {
           <div className="mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Torneos</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {tournaments.map((tournament) => (
-                <div 
-                  key={tournament.id} 
-                  className="bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden"
-                >
-                  <div className="bg-gradient-to-br from-blue-500 to-cyan-400 p-6 text-center">
-                    <div className="text-6xl mb-3">{tournament.image || '🏐'}</div>
-                    <h3 className="text-xl font-bold text-white uppercase">{tournament.name}</h3>
-                  </div>
-                  <div className="p-4">
-                    {tournament.description && (
-                      <p className="text-gray-600 text-sm mb-3">{tournament.description}</p>
-                    )}
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <div>
-                        <span className="font-medium">Inicio:</span> {new Date(tournament.start_date).toLocaleDateString('es-ES')}
-                      </div>
-                      {tournament.end_date && (
-                        <div>
-                          <span className="font-medium">Fin:</span> {new Date(tournament.end_date).toLocaleDateString('es-ES')}
+              {tournaments.map((tournament) => {
+                const isImageUrl = tournament.image && (tournament.image.startsWith('http://') || tournament.image.startsWith('https://'));
+                
+                // Determinar el estado del torneo
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const startDate = new Date(tournament.start_date);
+                startDate.setHours(0, 0, 0, 0);
+                const endDate = tournament.end_date ? new Date(tournament.end_date) : null;
+                if (endDate) endDate.setHours(23, 59, 59, 999);
+
+                let status = '';
+                let statusColor = '';
+                
+                if (today < startDate) {
+                  status = 'Por empezar';
+                  statusColor = 'bg-gray-500';
+                } else if (endDate && today > endDate) {
+                  status = 'Finalizado';
+                  statusColor = 'bg-red-500';
+                } else {
+                  status = 'En progreso';
+                  statusColor = 'bg-green-500';
+                }
+                
+                return (
+                  <div 
+                    key={tournament.id} 
+                    className="bg-white rounded-xl shadow-md hover:shadow-lg transition overflow-hidden relative"
+                  >
+                    {/* Badge de estado */}
+                    <div className="absolute top-3 right-3 z-10">
+                      <span className={`${statusColor} text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg`}>
+                        {status}
+                      </span>
+                    </div>
+
+                    {isImageUrl ? (
+                      <div className="relative h-48 overflow-hidden">
+                        <img 
+                          src={tournament.image} 
+                          alt={tournament.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end">
+                          <h3 className="text-xl font-bold text-white uppercase p-4 w-full text-center">{tournament.name}</h3>
                         </div>
+                      </div>
+                    ) : (
+                      <div className="bg-gradient-to-br from-blue-500 to-cyan-400 p-6 text-center">
+                        <div className="text-6xl mb-3">{tournament.image || '🏐'}</div>
+                        <h3 className="text-xl font-bold text-white uppercase">{tournament.name}</h3>
+                      </div>
+                    )}
+                    <div className="p-4">
+                      {tournament.description && (
+                        <p className="text-gray-600 text-sm mb-3">{tournament.description}</p>
                       )}
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div>
+                          <span className="font-medium">Inicio:</span> {new Date(tournament.start_date).toLocaleDateString('es-ES')}
+                        </div>
+                        {tournament.end_date && (
+                          <div>
+                            <span className="font-medium">Fin:</span> {new Date(tournament.end_date).toLocaleDateString('es-ES')}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
 
+        <div id="resultados" className="scroll-mt-20">
         <div className="flex space-x-2 sm:space-x-4 mb-6 overflow-x-auto">
           <button 
             onClick={() => setActiveTab('results')}
@@ -436,26 +500,27 @@ const Home = () => {
             </div>
           </div>
         </div>
+        </div>
       </div>
 
       {/* Tabla de Posiciones */}
       {Object.keys(standings).length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div id="tabla-posiciones" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 scroll-mt-20">
           <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Tabla de Posiciones</h2>
           
-          {/* Tabs de categorías */}
-          <div className="flex space-x-2 mb-6 overflow-x-auto">
-            {Object.keys(standings).map((category) => (
+          {/* Tabs de torneos */}
+          <div className="flex space-x-2 mb-6 overflow-x-auto pb-2">
+            {Object.keys(standings).map((tournamentName) => (
               <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
+                key={tournamentName}
+                onClick={() => setSelectedCategory(tournamentName)}
                 className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition ${
-                  selectedCategory === category
+                  selectedCategory === tournamentName
                     ? 'bg-blue-600 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
-                {category}
+                {tournamentName}
               </button>
             ))}
           </div>
@@ -478,7 +543,7 @@ const Home = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {standings[selectedCategory]?.map((team) => (
+                  {standings[selectedCategory]?.standings?.map((team) => (
                     <tr key={team.id} className="hover:bg-gray-50 transition">
                       <td className="px-4 py-4 text-sm font-bold text-gray-900">{team.position}</td>
                       <td className="px-4 py-4">
@@ -503,9 +568,9 @@ const Home = () => {
                 </tbody>
               </table>
             </div>
-            {(!standings[selectedCategory] || standings[selectedCategory].length === 0) && (
+            {(!standings[selectedCategory]?.standings || standings[selectedCategory]?.standings.length === 0) && (
               <div className="text-center py-8 text-gray-500">
-                No hay datos de posiciones para esta categoría
+                No hay datos de posiciones para este torneo
               </div>
             )}
           </div>

@@ -32,12 +32,10 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Torneos', path: '/#torneos', isHash: true },
-    { name: 'Partidos', path: '/partidos' },
-    { name: 'Clubes', path: '/clubes' },
-    { name: 'Jugadores', path: '/jugadores' },
+    { name: 'Partidos', path: '/#resultados', isHash: true },
+    { name: 'Tabla de posiciones', path: '/#tabla-posiciones', isHash: true },
     { name: 'Estadísticas', path: '/estadisticas' },
     { name: 'Noticias', path: '/noticias' },
-    { name: 'Documentos', path: '/documentos' },
   ]
 
   const adminLinks = [

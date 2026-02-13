@@ -101,17 +101,22 @@ export const getStandingsByCategory = async (req, res) => {
   }
 };
 
-// Obtener todas las tablas de posiciones (todas las categorías)
+// Obtener todas las tablas de posiciones agrupadas por torneo
 export const getAllStandings = async (req, res) => {
   try {
-    // Obtener todas las categorías únicas
-    const [categories] = await pool.query(
-      'SELECT DISTINCT category FROM matches WHERE status = "finished" ORDER BY category'
+    // Obtener todos los torneos que tengan al menos un match finalizado
+    const [tournaments] = await pool.query(
+      `SELECT DISTINCT t.id, t.name, t.start_date, t.end_date
+       FROM tournaments t
+       INNER JOIN matches m ON t.id = m.tournament_id
+       WHERE m.status = 'finished'
+       GROUP BY t.id
+       ORDER BY t.end_date IS NULL DESC, t.end_date DESC, t.start_date DESC`
     );
 
     const allStandings = {};
 
-    for (const cat of categories) {
+    for (const tournament of tournaments) {
       const [matches] = await pool.query(
         `SELECT m.*, 
                 t1.name as team1_name, t1.short_name as team1_short,
@@ -119,8 +124,8 @@ export const getAllStandings = async (req, res) => {
          FROM matches m
          LEFT JOIN teams t1 ON m.team1_id = t1.id
          LEFT JOIN teams t2 ON m.team2_id = t2.id
-         WHERE m.category = ? AND m.status = 'finished'`,
-        [cat.category]
+         WHERE m.tournament_id = ? AND m.status = 'finished'`,
+        [tournament.id]
       );
 
       const teamsMap = new Map();
@@ -191,7 +196,13 @@ export const getAllStandings = async (req, res) => {
           ...team
         }));
 
-      allStandings[cat.category] = standings;
+      allStandings[tournament.name] = {
+        tournamentId: tournament.id,
+        tournamentName: tournament.name,
+        startDate: tournament.start_date,
+        endDate: tournament.end_date,
+        standings: standings
+      };
     }
 
     res.json(allStandings);
